@@ -4,8 +4,25 @@ open class ToastWindow: UIWindow {
   
   // MARK: - Public Property
 
-  public static let shared = ToastWindow(frame: UIScreen.main.bounds, mainWindow: UIApplication.shared.keyWindow)
-
+  public static var shared: ToastWindow = {
+      if #available(iOS 13.0, *) {
+          if let windowScene = UIApplication.shared.connectedScenes
+              .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+              
+              // Get the key window for the active window scene
+              if let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
+                  let toastWindow = ToastWindow(frame: UIScreen.main.bounds, mainWindow: keyWindow)
+                  toastWindow.windowLevel = .alert // Make sure the toast is displayed above other content
+                  toastWindow.isHidden = false  // Ensure it's not hidden
+                  return toastWindow
+              }
+          }
+      }
+      
+      // Fallback for iOS 12 and below or if no key window found
+      return ToastWindow(frame: UIScreen.main.bounds, mainWindow: UIApplication.shared.keyWindow)
+  }()
+  
   override open var rootViewController: UIViewController? {
     get {
       guard !self.isShowing else {
