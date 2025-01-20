@@ -232,11 +232,14 @@ open class ToastWindow: UIWindow {
 
   /// Returns top window that isn't self
   private func topWindow() -> UIWindow? {
-    if let window = UIApplication.shared.windows.last(where: {
-      // https://github.com/devxoul/Toaster/issues/152
-      KeyboardObserver.shared.didKeyboardShow || $0.isOpaque
-    }), window !== self {
-      return window
+//    if let window = UIApplication.shared.windows.last(where: {
+//      // https://github.com/devxoul/Toaster/issues/152
+//      KeyboardObserver.shared.didKeyboardShow || $0.isOpaque
+//    }), window !== self {
+//      return window
+//    }
+    if let window = self.mainWindow {
+        return window
     }
     return nil
   }
